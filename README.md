@@ -1,5 +1,5 @@
 # QuadraticEquationSolver
-Примеры работы прогркаммы.
+Примеры работы программы.
 
 1) Найдено два вещественных корня уравнения:
 ![image](https://github.com/user-attachments/assets/e6cc136d-a5fb-4540-a188-889982fbb934)
