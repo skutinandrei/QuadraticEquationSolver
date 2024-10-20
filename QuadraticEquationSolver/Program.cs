@@ -31,7 +31,7 @@ namespace QuadraticEquationSolver
             {
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Значение {e.Data["value"]} не входит в диапазон допустимых значенией.");
+                Console.WriteLine($"Значение {e.Data["value"]} не входит в диапазон допустимых значений.");
                 Console.WriteLine($"Допустимые значения: от {int.MinValue} до {int.MaxValue}");
                 Console.ResetColor();
             }
