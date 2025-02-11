@@ -184,20 +184,4 @@ namespace QuadraticEquationSolver
             }
         }
     }
-
-    class ParseException : FormatException
-    {
-        public ParseException(string message)
-            : base(message)
-        {
-        }
-    }
-    class SolverException : Exception
-    {
-        public SolverException(string message)
-            : base(message)
-        {
-        }
-    }
 }
-
