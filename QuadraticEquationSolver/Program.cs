@@ -1,31 +1,60 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using System.Numerics;
 
 namespace QuadraticEquationSolver
 {
     internal class Program
     {
+        private static readonly string[] labels = { "a", "b", "c" };
+
         static void Main(string[] args)
         {
-            Console.WriteLine("a * x^2 + b * x + c = 0");
+            string[] inputs = new string[3] { "", "", "" };
+            int selected = 0;
 
-            Console.WriteLine($"Введите значение a:");
-            string a = Console.ReadLine();
-            Console.WriteLine($"Введите значение b:");
-            string b = Console.ReadLine();
-            Console.WriteLine($"Введите значение c:");
-            string c = Console.ReadLine();
+            ConsoleKey key;
+            do
+            {
+                Console.Clear();
+
+                Console.WriteLine($"{FormatEquation(inputs)}");
+
+                for (int i = 0; i < 3; i++)
+                    Console.WriteLine($"{(i == selected ? ">" : " ")} {labels[i]}: {inputs[i]}");
+
+                var keyInfo = Console.ReadKey(true);
+                key = keyInfo.Key;
+
+                switch (key)
+                {
+                    case ConsoleKey.UpArrow:
+                        selected = Math.Max(0, selected - 1);
+                        break;
+                    case ConsoleKey.DownArrow:
+                        selected = Math.Min(2, selected + 1);
+                        break;
+                    case ConsoleKey.Backspace:
+                        if (inputs[selected].Length > 0)
+                            inputs[selected] = inputs[selected][..^1];
+                        break;
+                    case ConsoleKey.Enter:
+                        break;
+                    default:
+                        inputs[selected] += keyInfo.KeyChar;
+                        break;
+                }
+            } while (key != ConsoleKey.Enter);
+
             var parametersText = new Dictionary<string, string>() {
-                { "a", a},
-                { "b", b},
-                { "c", c}
+                { labels[0], inputs[0] },
+                { labels[1], inputs[1] },
+                { labels[2], inputs[2] }
             };
-
             try
             {
                 var parametersNumeric = ParseParameters(parametersText);
-                Solver(parametersNumeric);
+
+                Solve(parametersNumeric);
             }
             catch (OverflowException e)
             {
@@ -45,37 +74,12 @@ namespace QuadraticEquationSolver
             }
         }
 
-        enum Severity
+        static string FormatEquation(string[] inputs)
         {
-            Warning,
-            Error
-        }
+            string GetValue(int index) =>
+                int.TryParse(inputs[index], out _) ? inputs[index] : labels[index].ToString();
 
-        static void FormatData(string message, Severity severity, IDictionary data)
-        {
-            if (severity == Severity.Warning)
-            {
-                Console.BackgroundColor = ConsoleColor.Yellow;
-                Console.ForegroundColor = ConsoleColor.Black;
-            }
-            else
-            {
-                Console.BackgroundColor = ConsoleColor.Red;
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-            Console.WriteLine("--------------------------------------------------");
-            Console.WriteLine($"{message}");
-
-            var dataDictionary = data.Keys.Cast<object>().ToDictionary(k => k, k => data[k]);
-
-            foreach (var item in dataDictionary)
-            {
-                Console.WriteLine($"{item.Key} = {item.Value}");
-            }
-
-            Console.WriteLine("--------------------------------------------------");
-
-            Console.ResetColor();
+            return $"{GetValue(0)}x^2 + {GetValue(1)}x + {GetValue(2)} = 0";
         }
 
         static Dictionary<string, int> ParseParameters(Dictionary<string, string> parameters)
@@ -113,7 +117,40 @@ namespace QuadraticEquationSolver
             return numericParameters;
         }
 
-        static void Solver(Dictionary<string, int> parameters)
+        enum Severity
+        {
+            Warning,
+            Error
+        }
+
+        static void FormatData(string message, Severity severity, IDictionary data)
+        {
+            if (severity == Severity.Warning)
+            {
+                Console.BackgroundColor = ConsoleColor.Yellow;
+                Console.ForegroundColor = ConsoleColor.Black;
+            }
+            else
+            {
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            Console.WriteLine("--------------------------------------------------");
+            Console.WriteLine($"{message}");
+
+            var dataDictionary = data.Keys.Cast<object>().ToDictionary(k => k, k => data[k]);
+
+            foreach (var item in dataDictionary)
+            {
+                Console.WriteLine($"{item.Key} = {item.Value}");
+            }
+
+            Console.WriteLine("--------------------------------------------------");
+
+            Console.ResetColor();
+        }
+
+        static void Solve(Dictionary<string, int> parameters)
         {
             int a = parameters["a"];
             int b = parameters["b"];
@@ -163,3 +200,4 @@ namespace QuadraticEquationSolver
         }
     }
 }
+
